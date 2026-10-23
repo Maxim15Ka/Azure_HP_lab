@@ -1,4 +1,4 @@
-# Azure Cowrie Honeypot and Microsoft Sentinel Lab
+Azure Cowrie Honeypot and Microsoft Sentinel Lab
 
 I deployed a Cowrie SSH honeypot on an Azure Ubuntu VM, collected its JSON telemetry with Azure Monitor Agent, and used Microsoft Sentinel to investigate activity, visualize source IP locations, and generate an incident through a scheduled detection rule.
 
@@ -58,7 +58,7 @@ The final CSV has a report cutoff of **October 15, 2026, 04:34:13.465 UTC** (12:
 | 89.248.172.12 | 1 | 0 | 0 | 0 |
 | **Total** | **4,301** | **4,290** | **1** | **4,290** |
 
-Source: [final observation summary](data/observation-summary.csv). The dominant IP accounts for approximately **99.8%** of connection events. A connection does not necessarily progress to authentication or command input, and the event totals need not match one another.
+Source: [final observation summary](observation-summary.csv). The dominant IP accounts for approximately **99.8%** of connection events. A connection does not necessarily progress to authentication or command input, and the event totals need not match one another.
 
 ## Investigation
 
@@ -84,7 +84,7 @@ The hexadecimal values represent the letters `o` and `k`, so this command prints
 
 This finding explains the dominant source's repetitive command activity. The command alone does not establish malware execution, host compromise, the operator's identity, or their broader purpose.
 
-The **4,476** count comes from a later query with a different cutoff than the original CSV. It is reported separately and is not added to the original **4,290** command-input total. The follow-up count was supplied from the query results; a separate export or screenshot is not included in this package. The query is saved in [command-patterns.kql](queries/command-patterns.kql).
+The **4,476** count comes from a later query with a different cutoff than the original CSV. It is reported separately and is not added to the original **4,290** command-input total. The follow-up count was supplied from the query results; a separate export or screenshot is not included in this package. The query is saved in [command-patterns.kql](command-patterns.kql).
 
 ## Geographic visualization
 
@@ -92,7 +92,7 @@ The **4,476** count comes from a later query with a different cutoff than the or
 
 I added a source-location table below the connection map to display readable IP addresses, approximate locations, and connection counts alongside the geographic view.
 
-![Completed Cowrie workbook with a connection map and source-location table](images/workbook-map-and-source-table.png)
+![Completed Cowrie workbook with a connection map and source-location table](workbook-map-and-source-table.png)
 
 The table visible in this later screenshot reports:
 
@@ -112,7 +112,7 @@ The workbook's upper counters display approximately **37.6K Cowrie_CL rows**, **
 
 ### Earlier workbook evidence
 
-![Workbook showing source IP locations and connection activity](images/connection-map.png)
+![Workbook showing source IP locations and connection activity](connection-map.png)
 
 This screenshot is an earlier rolling-window snapshot, not the final observation totals. The earlier map CSV contains four source IPs and 1,814 connections; it must not be combined with the final CSV as additional activity.
 
@@ -134,7 +134,7 @@ The starter workbook's table counters count log rows. They should not be interpr
 
 The rule produced **incident #2**, containing one alert and the mapped IP `8.134.58.87`. This verifies the path from captured activity to a Sentinel incident. The threshold was chosen for the lab and would require tuning in another environment.
 
-![Sentinel incident with the mapped source IP](images/sentinel-incident.png)
+![Sentinel incident with the mapped source IP](sentinel-incident.png)
 
 ## Skills demonstrated and limitations
 
