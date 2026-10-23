@@ -1,0 +1,9 @@
+// Follow-up query: rolling 24-hour window; results change as collection continues.
+// Reported result: 4,476 events with input echo -e "\x6F\x6B".
+// This is a later snapshot than data/observation-summary.csv.
+Cowrie_CL
+| where TimeGenerated > ago(24h)
+| where src_ip == "8.134.58.87"
+| where eventid == "cowrie.command.input"
+| summarize TimesObserved = count() by input
+| order by TimesObserved desc

@@ -1,0 +1,13 @@
+// Rolling one-hour source/location table. Use the same time filter and
+// refresh timing as the map when comparing totals across workbook items.
+Cowrie_CL
+| where TimeGenerated > ago(1h)
+| where eventid == "cowrie.session.connect"
+| where isnotempty(src_ip)
+| where src_ip !in ("127.0.0.1", "::1")
+| summarize Connections = count() by src_ip
+| extend Geo = geo_info_from_ip_address(src_ip)
+| extend Country = tostring(Geo.country), City = tostring(Geo.city)
+| extend Location = case(isempty(Country), "Unknown location", isempty(City), Country, strcat(City, ", ", Country))
+| project Source = strcat(src_ip, " — ", Location), Connections
+| order by Connections desc

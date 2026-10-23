@@ -1,0 +1,10 @@
+// Rolling one-hour map; counts change as the window advances.
+Cowrie_CL
+| where TimeGenerated > ago(1h)
+| where eventid == "cowrie.session.connect"
+| where isnotempty(src_ip)
+| where src_ip !in ("127.0.0.1", "::1")
+| summarize Connections = count() by src_ip
+| extend Geo = geo_info_from_ip_address(src_ip)
+| project SourceIP = src_ip, Connections, Country = tostring(Geo.country), City = tostring(Geo.city), Latitude = todouble(Geo.latitude), Longitude = todouble(Geo.longitude)
+| order by Connections desc

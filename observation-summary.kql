@@ -1,0 +1,11 @@
+// Original export query. Set the Logs UI time range to Last 24 hours.
+// Rerunning now produces a different cutoff and may include later activity.
+let Cutoff = now();
+Cowrie_CL
+| where TimeGenerated <= Cutoff
+| extend EventTime = todatetime(timestamp)
+| where isnotempty(src_ip)
+| where src_ip !in ("127.0.0.1", "::1")
+| summarize FirstObservedUTC = min(EventTime), LastObservedUTC = max(EventTime), Connections = countif(eventid == "cowrie.session.connect"), AcceptedLogins = countif(eventid == "cowrie.login.success"), FailedLogins = countif(eventid == "cowrie.login.failed"), Commands = countif(eventid == "cowrie.command.input") by src_ip
+| extend ReportCutoffUTC = Cutoff
+| order by Connections desc
